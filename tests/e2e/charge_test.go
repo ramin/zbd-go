@@ -4,6 +4,7 @@ package e2e
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -53,6 +54,18 @@ func TestCharges(t *testing.T) {
 		}
 		if charge.CallbackURL != callbackURL {
 			t.Error("charge callback url is different than specified")
+		}
+	}
+
+	// get all charges
+	charges, err := client.ListCharges()
+	if err != nil {
+		t.Errorf("got error from .ListCharges(): %s", err)
+	} else {
+		sort.Slice(charges, func(i, j int) bool { return charges[i].CreatedAt.Before(charges[j].CreatedAt) })
+		if charges[len(charges)-1].ID != charge.ID {
+			t.Errorf("last charge from list is not the charge we just created (%s != %s)",
+				charges[len(charges)-1].ID, charge.ID)
 		}
 	}
 }
