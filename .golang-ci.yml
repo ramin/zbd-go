@@ -51,6 +51,6 @@ linters-settings:
   misspell:
     locale: US
   goimports:
-    local-prefixes: github.com/zebedeeio/go-sdk
+    local-prefixes: github.com/zebedeeio/zbd-go
   dupl:
     threshold: 200

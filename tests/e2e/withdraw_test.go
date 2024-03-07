@@ -1,6 +1,6 @@
 //go:build e2e
 
-package e2e
+package testing
 
 import (
 	"sort"
@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	zebedee "github.com/zebedeeio/go-sdk"
+	zebedee "github.com/zebedeeio/zbd-go"
 )
 
 func TestWithdrawalRequests(t *testing.T) {

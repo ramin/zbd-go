@@ -1,23 +1,23 @@
-# go-sdk
+# zbd-go
 
-[![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/zebedeeio/go-sdk) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](LICENSE)
+[![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/zebedeeio/zbd-go) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](LICENSE)
 
-ZEBEDEE's `go-sdk` is a Go package that provides a simple wrapper over the [ZEBEDEE API](https://documentation.zebedee.io/).
+ZEBEDEE's `zbd-go` is a Go package that provides a simple wrapper over the [ZEBEDEE API](https://documentation.zebedee.io/).
 
 ## Installing
 
 ```
-go get github.com/zebedeeio/go-sdk
+go get github.com/zebedeeio/zbd-go
 ```
 
 ## Usage
 
-Below is an example which shows some common use cases for `zebedee`. More documentation can be found on [Godoc](https://godoc.org/github.com/zebedeeio/go-sdk).
+Below is an example which shows some common use cases for `zebedee`. More documentation can be found on [Godoc](https://godoc.org/github.com/zebedeeio/zbd-go).
 
 ```golang
 package main
 
-import zebedee "github.com/zebedeeio/go-sdk"
+import zebedee "github.com/zebedeeio/zbd-go"
 
 func main () {
 	zbd := zebedee.New(APIKEY)

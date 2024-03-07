@@ -1,11 +1,11 @@
 //go:build e2e
 
-package e2e
+package testing
 
 import (
 	"os"
 
-	zebedee "github.com/zebedeeio/go-sdk"
+	zebedee "github.com/zebedeeio/zbd-go"
 )
 
 func NewClient() *zebedee.Client {

@@ -2,7 +2,6 @@ package zebedee
 
 import (
 	"fmt"
-	"net/http"
 )
 
 type PublicUser struct {
@@ -16,14 +15,13 @@ type PublicUser struct {
 }
 
 func GetPublicGamertagData(gamertag string) (*PublicUser, error) {
-	client := &Client{
-		BaseURL:    "https://api.zebedee.io/public/v1",
-		APIKey:     "blank",
-		HttpClient: &http.Client{},
-	}
+	client := NewPublicClient("noop")
+	return client.GetPublicUser(gamertag)
+}
 
+func (c *Client) GetPublicUser(gamertag string) (*PublicUser, error) {
 	var pu PublicUser
 	endpoint := fmt.Sprintf("/user/%s", gamertag)
-	err := client.MakeRequest("GET", endpoint, nil, &pu)
+	err := c.MakeRequest("GET", endpoint, nil, &pu)
 	return &pu, err
 }

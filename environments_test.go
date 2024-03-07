@@ -30,6 +30,7 @@ func TestEnvironmentString(t *testing.T) {
 	}{
 		{Production, "production"},
 		{Sandbox, "sandbox"},
+		{Public, "public"},
 		{Environment(69429), "unknown"},
 	}
 

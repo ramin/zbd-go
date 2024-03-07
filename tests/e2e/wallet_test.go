@@ -1,11 +1,11 @@
 //go:build e2e
 
-package e2e
+package testing
 
 import (
 	"testing"
 
-	zebedee "github.com/zebedeeio/go-sdk"
+	zebedee "github.com/zebedeeio/zbd-go"
 )
 
 func TestWallet(t *testing.T) {

@@ -1,20 +1,21 @@
 package zebedee
 
 import (
-	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
-	"net/http"
 	"strings"
 	"time"
 )
 
 type Response struct {
-	Success *bool           `json:"success"`
-	Message string          `json:"message"`
-	Data    json.RawMessage `json:"data"`
+	Success   *bool           `json:"success"`
+	Message   string          `json:"message"`
+	Data      json.RawMessage `json:"data"`
+	requester Requester       `json:"-"`
+}
+
+func (c *Client) AddRequester(requester Requester) {
+	c.Requester = requester
 }
 
 func (c *Client) MakeRequest(
@@ -23,53 +24,7 @@ func (c *Client) MakeRequest(
 	content interface{},
 	response interface{},
 ) error {
-	body := &bytes.Buffer{}
-	if content != nil {
-		err := json.NewEncoder(body).Encode(content)
-		if err != nil {
-			return fmt.Errorf("fail to encode JSON: %w", err)
-		}
-	}
-
-	req, err := http.NewRequest(method, c.BaseURL+path, body)
-	if err != nil {
-		return err
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("apikey", c.APIKey)
-
-	resp, err := c.HttpClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	responseBody, _ := io.ReadAll(resp.Body)
-
-	var baseResponse Response
-	err = json.Unmarshal(responseBody, &baseResponse)
-	if err != nil {
-		return fmt.Errorf("fail to decode JSON from %s: %s", path, err.Error())
-	}
-
-	if resp.StatusCode >= 300 {
-		// the API returned a structured error
-		if baseResponse.Message != "" {
-			return errors.New(baseResponse.Message)
-		}
-
-		// an unexpected failure
-		return fmt.Errorf("%s returned an error (%d): '%s'",
-			path, resp.StatusCode, string(responseBody))
-	}
-
-	err = json.Unmarshal(baseResponse.Data, &response)
-	if err != nil {
-		return fmt.Errorf("Error unmarshaling field \"data\" from API response: %w", err)
-	}
-
-	return nil
+	return c.Requester.MakeRequest(c, method, path, content, response)
 }
 
 func (c *Client) Wallet() (*Wallet, error) {

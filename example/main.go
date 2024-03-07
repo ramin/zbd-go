@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	zebedee "github.com/zebedeeio/go-sdk"
+	zebedee "github.com/zebedeeio/zbd-go"
 )
 
 func main() {

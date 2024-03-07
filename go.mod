@@ -1,4 +1,4 @@
-module github.com/zebedeeio/go-sdk
+module github.com/zebedeeio/zbd-go
 
 go 1.21
 
