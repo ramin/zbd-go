@@ -11,21 +11,6 @@ import (
 	"time"
 )
 
-// BaseURL is https://api.zebedee.io/v0 by default.
-type Client struct {
-	BaseURL    string
-	APIKey     string
-	HttpClient *http.Client
-}
-
-func New(apikey string) *Client {
-	return &Client{
-		BaseURL:    "https://api.zebedee.io/v0",
-		APIKey:     apikey,
-		HttpClient: &http.Client{},
-	}
-}
-
 type Response struct {
 	Success *bool           `json:"success"`
 	Message string          `json:"message"`
@@ -113,7 +98,8 @@ func (c *Client) ListCharges() ([]Charge, error) {
 // Get Charge Details: https://api-reference.zebedee.io/#a5a2d24c-2a38-44d0-bc00-57598066f1f2
 func (c *Client) GetCharge(chargeID string) (*Charge, error) {
 	var charge Charge
-	err := c.MakeRequest("GET", "/charges/"+chargeID, nil, &charge)
+	path := fmt.Sprintf("/charges/%s", chargeID)
+	err := c.MakeRequest("GET", path, nil, &charge)
 	return &charge, err
 }
 
@@ -136,7 +122,8 @@ func (c *Client) ListWithdrawalRequests() ([]WithdrawalRequest, error) {
 // Get Withdrawal Request Details: https://api-reference.zebedee.io/#12aea552-0b8d-4562-a84b-a890d4f17a32
 func (c *Client) GetWithdrawalRequest(wrequestID string) (*WithdrawalRequest, error) {
 	var wr WithdrawalRequest
-	err := c.MakeRequest("GET", "/withdrawal-requests/"+wrequestID, nil, &wr)
+	path := fmt.Sprintf("/withdrawal-requests/%s", wrequestID)
+	err := c.MakeRequest("GET", path, nil, &wr)
 	return &wr, err
 }
 
@@ -159,7 +146,8 @@ func (c *Client) ListPayments() ([]Payment, error) {
 // Get Payment Details: https://api-reference.zebedee.io/#244ebe9f-6c4d-4162-a805-9a0e8955b20d
 func (c *Client) GetPayment(paymentID string) (*Payment, error) {
 	var payment Payment
-	err := c.MakeRequest("GET", "/payments/"+paymentID, nil, &payment)
+	path := fmt.Sprintf("/payments/%s", paymentID)
+	err := c.MakeRequest("GET", path, nil, &payment)
 	return &payment, err
 }
 
@@ -177,7 +165,8 @@ func (c *Client) SendGamertagPayment(gamertag, amount, description string) (*Pee
 // Fetch Gamertag Transaction Details By ID: https://api-reference.zebedee.io/#80571b36-eac4-4966-9c49-1b83d0ae466e
 func (c *Client) FetchGamerTagTransaction(transactionID string) (*PeerPayment, error) {
 	var payment PeerPayment
-	err := c.MakeRequest("GET", "/gamertag/transaction/"+transactionID, nil, &payment)
+	path := fmt.Sprintf("/gamertag/transaction/%s", transactionID)
+	err := c.MakeRequest("GET", path, nil, &payment)
 	return &payment, err
 }
 
@@ -186,6 +175,7 @@ func (c *Client) FetchUserIDFromGamertag(gamertag string) (string, error) {
 	var data struct {
 		ID string `json:"id"`
 	}
+
 	err := c.MakeRequest("GET", "/user-id/gamertag/"+gamertag, nil, &data)
 	return data.ID, err
 }
@@ -195,6 +185,7 @@ func (c *Client) FetchGamertagFromUserID(userID string) (string, error) {
 	var data struct {
 		Gamertag string `json:"gamertag"`
 	}
+
 	err := c.MakeRequest("GET", "/gamertag/user-id/"+userID, nil, &data)
 	return data.Gamertag, err
 }

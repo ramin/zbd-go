@@ -19,7 +19,7 @@ func TestWallet(t *testing.T) {
 
 func TestBadAuth(t *testing.T) {
 	badClient := zebedee.New("invalidkey")
-	badClient.BaseURL = "https://dev.zebedee.io/v0"
+	badClient.BaseURL = "https://api.zebedee.io/v0"
 
 	_, err := badClient.Wallet()
 	if err == nil {

@@ -10,5 +10,5 @@ import (
 
 func NewClient() *zebedee.Client {
 	apiKey := os.Getenv("ZEBEDEE_API_KEY")
-	return zebedee.New(apiKey)
+	return zebedee.New(apiKey).Sandbox()
 }

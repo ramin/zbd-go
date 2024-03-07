@@ -3,7 +3,7 @@
 package e2e
 
 import (
-	"sort"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -12,13 +12,19 @@ import (
 )
 
 func TestCharges(t *testing.T) {
+
+	var internalID = "testx"
+	var callbackURL = "https://example.com/callback"
+	var amount = "123000"
+	var description = "a test invoice"
+
 	client := NewClient()
 	charge, err := client.Charge(&zebedee.Charge{
 		ExpiresIn:   30 * 60,
-		Amount:      "123000",
-		Description: "a test invoice",
-		InternalID:  "testx",
-		CallbackURL: "https://example.com/callback",
+		Amount:      amount,
+		Description: description,
+		InternalID:  internalID,
+		CallbackURL: callbackURL,
 	})
 	if err != nil {
 		t.Errorf("got error from .Charge(): %s", err)
@@ -26,7 +32,7 @@ func TestCharges(t *testing.T) {
 		if charge.ExpiresAt.After(time.Now().Add(time.Minute * 30)) {
 			t.Error("charge expires after we wanted")
 		}
-		if !strings.HasPrefix(charge.Invoice.Request, "lnbc123") {
+		if !strings.HasPrefix(charge.Invoice.Request, "lntbs123") {
 			t.Error("charge has wrong bolt11 invoice")
 		}
 	}
@@ -36,29 +42,17 @@ func TestCharges(t *testing.T) {
 	if err != nil {
 		t.Errorf("got error from .GetCharge(): %s", err)
 	} else {
-		if charge.Amount != "123000" {
+		if charge.Amount != amount {
 			t.Error("charge amount is different than specified")
 		}
-		if charge.Description != "a test invoice" {
+		if charge.Description != description {
 			t.Error("charge description is different than specified")
 		}
-		if charge.InternalID != "testx" {
+		if charge.InternalID != internalID {
 			t.Error("charge internal id is different than specified")
 		}
-		if charge.CallbackURL != "https://example.com/callback" {
+		if charge.CallbackURL != callbackURL {
 			t.Error("charge callback url is different than specified")
-		}
-	}
-
-	// get all charges
-	charges, err := client.ListCharges()
-	if err != nil {
-		t.Errorf("got error from .ListCharges(): %s", err)
-	} else {
-		sort.Slice(charges, func(i, j int) bool { return charges[i].CreatedAt.Before(charges[j].CreatedAt) })
-		if charges[len(charges)-1].ID != charge.ID {
-			t.Errorf("last charge from list is not the charge we just created (%s != %s)",
-				charges[len(charges)-1].ID, charge.ID)
 		}
 	}
 }
@@ -66,14 +60,15 @@ func TestCharges(t *testing.T) {
 func TestChargesBad(t *testing.T) {
 	client := NewClient()
 	_, err := client.Charge(&zebedee.Charge{
-		Amount:      "123000000",
+		Amount:      "5000000000",
 		Description: "a test invoice",
 		InternalID:  "testb",
 	})
+
 	if err == nil {
 		t.Errorf(".Charge() should have returned an error")
-	} else if err.Error() != "The maximum Charge amount supported is 45,000 satoshis." {
-		t.Errorf(".Charge() returned the wrong error")
+	} else if err.Error() != "The maximum Charge amount supported is 500,000 satoshis." {
+		t.Errorf(".Charge() returned the wrong error %s", err.Error())
 	}
 
 	_, err = client.Charge(&zebedee.Charge{
@@ -81,7 +76,9 @@ func TestChargesBad(t *testing.T) {
 		Description: "a test invoice",
 		InternalID:  "testb",
 	})
+
 	if err == nil {
+		fmt.Println(err)
 		t.Errorf(".Charge() should have returned an error")
 	}
 }

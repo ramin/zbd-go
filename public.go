@@ -1,6 +1,9 @@
 package zebedee
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 type PublicUser struct {
 	Name                   string            `json:"name"`
@@ -20,6 +23,7 @@ func GetPublicGamertagData(gamertag string) (*PublicUser, error) {
 	}
 
 	var pu PublicUser
-	err := client.MakeRequest("GET", "/user/"+gamertag, nil, &pu)
+	endpoint := fmt.Sprintf("/user/%s", gamertag)
+	err := client.MakeRequest("GET", endpoint, nil, &pu)
 	return &pu, err
 }
